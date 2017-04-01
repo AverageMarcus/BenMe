@@ -40,15 +40,12 @@ const getFaces = async (image) => {
 }
 
 app.use(async (ctx) => {
-  console.log('Got request');
   try {
     const imageUrl = ctx.query.image;
     if (imageUrl) {
       console.log(`Image URL: ${imageUrl}`);
-
       const inputImage = await jimp.read(imageUrl);
       const benImage = await jimp.read('https://placeholder.benadventure.club/face');
-
       const faces = await getFaces(await getBuffer(inputImage));
 
       for (const face of faces){
