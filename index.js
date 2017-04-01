@@ -40,6 +40,7 @@ const getFaces = async (image) => {
 }
 
 app.use(async (ctx) => {
+  console.log('Got request');
   try {
     const imageUrl = ctx.query.image;
     if (imageUrl) {
