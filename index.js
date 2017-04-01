@@ -3,7 +3,6 @@ const Koa = require('koa');
 const app = new Koa();
 const cv = require('opencv');
 const jimp = require('jimp');
-const request = require('request-promise');
 
 const getBuffer = async (image) => {
   return new Promise((resolve, reject) => {
