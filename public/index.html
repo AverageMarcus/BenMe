@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>BenMe - Be the Ben</title>
+    <script src="tracking-min.js"></script>
+    <script src="face-min.js"></script>
+    <style>
+      @import url('https://fonts.googleapis.com/css?family=Press+Start+2P');
+      body {
+        background-color: #3A7CA5;
+        font-family: 'Press Start 2P', cursive;
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+      }
+      h1 {
+        color: #D9DCD6;
+        text-align: center;
+      }
+      .fromImage {
+        text-align: center;
+        margin: 1em;
+      }
+      #imageUrl {
+        width: 500px;
+        max-width: 100%;
+        margin: 0.5em auto;
+        border: 3px solid #81C3D7;
+        font-size: 1.5em;
+      }
+      button {
+        font-size: 1.5em;
+        margin: 0 0.5em;
+        background: #2F6690;
+        color: #D9DCD6;
+        border-color: #D9DCD6;
+      }
+      .container {
+        text-align: center;
+        display: none;
+      }
+      canvas {
+        margin: 0 auto;
+        border: 3px solid #81C3D7;
+      }
+      video {
+        position: absolute;
+        left: 200%;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>BenMe - Be the Ben</h1>
+
+    <div class="fromImage">
+      URL to image:<br>
+      <input type="text" id="imageUrl" />
+      <button id="goButton">Go!</button>
+      <h2>or</h2>
+      <button id="webcamButton">Use webcam</button>
+    </div>
+
+    <div class="container">
+      <video id="video" width="600" height="452" preload autoplay loop muted></video>
+      <canvas id="canvas" width="600" height="452"></canvas>
+      <br>
+      <button id="photoButton">Take Photo</button>
+    </div>
+
+
+    <script>
+      document.getElementById('webcamButton').addEventListener('click', function(event) {
+        this.style.display = 'none';
+        document.querySelector('.container').style.display = 'block';
+
+        var video = document.getElementById('video');
+        var canvas = document.getElementById('canvas');
+        var context = canvas.getContext('2d');
+
+        var tracker = new tracking.ObjectTracker('face');
+        tracker.setInitialScale(8);
+        tracker.setStepSize(1);
+        tracker.setEdgesDensity(0.1);
+
+        tracking.track('#video', tracker, { camera: true });
+
+        tracker.on('track', function(event) {
+          context.clearRect(0, 0, canvas.width, canvas.height);
+          context.drawImage(video, 0, 0, video.width, video.height);
+
+          event.data.forEach(function(rect) {
+            var ben = document.createElement('img');
+            ben.src = 'https://placeholder.benadventure.club/face';
+            context.drawImage(ben, rect.x - (rect.x * 0.1), rect.y - (rect.x * 0.1), rect.width + (rect.height * 0.2), rect.height + (rect.height * 0.2));
+          });
+        });
+
+      });
+
+      document.getElementById('goButton').addEventListener('click', function(event) {
+        window.location = window.location.origin + '?image=' + document.getElementById('imageUrl').value;
+      });
+
+      document.getElementById('photoButton').addEventListener('click', function(event) {
+        window.location = document.getElementById('canvas').toDataURL("image/png");
+      });
+    </script>
+  </body>
+</html>
